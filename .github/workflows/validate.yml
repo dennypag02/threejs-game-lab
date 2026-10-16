@@ -1,0 +1,19 @@
+name: Validate Three.js prototype
+on:
+  push:
+  pull_request:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check HTML and gameplay hooks
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          html = Path('index.html').read_text()
+          required = ['<!doctype html>', 'three.module.js', 'requestAnimationFrame', 'pointerdown', 'Stars:', 'renderer.render', 'camera.lookAt']
+          for item in required:
+              assert item in html, f'Missing: {item}'
+          print('Static prototype checks passed')
+          PY
